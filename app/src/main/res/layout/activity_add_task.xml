@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddTaskActivity">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:clickable="true"
+        app:cardBackgroundColor="@color/primary_5"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:tint="@color/primary_color"
+            app:srcCompat="@drawable/baseline_arrow_back_24" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <TextView
+        android:id="@+id/textView2"
+        style="@style/TextAppearance.MaterialComponents.Headline5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add New Task"
+        android:textFontWeight="600"
+        app:layout_constraintBottom_toBottomOf="@+id/materialCardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/materialCardView" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView1"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:clickable="true"
+        app:cardBackgroundColor="@color/primary_5"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:tint="@color/primary_color"
+            app:srcCompat="@drawable/baseline_save_24" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <EditText
+        android:id="@+id/editTextText"
+        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:padding="4dp"
+        android:textFontWeight="400"
+        android:hint="Write task here..."
+        android:inputType="text"
+        android:textColorHint="#66000000"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/materialCardView" />
+
+    <EditText
+        android:id="@+id/editTextText2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@android:color/transparent"
+        android:ems="10"
+        android:padding="4dp"
+        android:hint="Description..."
+        android:inputType="text"
+        android:textColorHint="#66000000"
+        app:layout_constraintEnd_toEndOf="@+id/editTextText"
+        app:layout_constraintStart_toStartOf="@+id/editTextText"
+        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
