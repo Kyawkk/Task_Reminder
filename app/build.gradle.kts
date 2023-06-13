@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.kyawzinlinn.todoreminder"
+    namespace = "com.kyawzinlinn.taskreminder"
     compileSdk = 33
 
     buildFeatures{
@@ -13,7 +13,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.kyawzinlinn.todoreminder"
+        applicationId = "com.kyawzinlinn.taskreminder"
         minSdk = 23
         targetSdk = 33
         versionCode = 1
@@ -64,4 +64,6 @@ dependencies {
     annotationProcessor("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
+
+    implementation("androidx.work:work-runtime-ktx:2.7.1")
 }

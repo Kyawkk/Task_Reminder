@@ -1,4 +1,4 @@
-package com.kyawzinlinn.todoreminder
+package com.kyawzinlinn.taskreminder
 
 import org.junit.Test
 

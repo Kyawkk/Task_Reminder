@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AddTaskActivity">
+    tools:context=".ui.AddTaskActivity">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView"
+        android:id="@+id/cv_back"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="16dp"
@@ -22,7 +22,7 @@
         <ImageView
             android:id="@+id/imageView5"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="25dp"
             android:layout_gravity="center"
             android:tint="@color/primary_color"
             app:srcCompat="@drawable/baseline_arrow_back_24" />
@@ -35,13 +35,13 @@
         android:layout_height="wrap_content"
         android:text="Add New Task"
         android:textFontWeight="600"
-        app:layout_constraintBottom_toBottomOf="@+id/materialCardView"
+        app:layout_constraintBottom_toBottomOf="@+id/cv_back"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/materialCardView" />
+        app:layout_constraintTop_toTopOf="@+id/cv_back" />
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView1"
+        android:id="@+id/cv_save_task"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="16dp"
@@ -63,7 +63,7 @@
     </com.google.android.material.card.MaterialCardView>
 
     <EditText
-        android:id="@+id/editTextText"
+        android:id="@+id/ed_task_title"
         style="@style/TextAppearance.MaterialComponents.Subtitle1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -72,6 +72,8 @@
         android:layout_marginEnd="16dp"
         android:background="@android:color/transparent"
         android:ems="10"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:padding="4dp"
         android:textFontWeight="400"
         android:hint="Write task here..."
@@ -80,21 +82,159 @@
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/materialCardView" />
+        app:layout_constraintTop_toBottomOf="@+id/cv_back" />
 
     <EditText
-        android:id="@+id/editTextText2"
+        android:id="@+id/ed_task_description"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
         android:background="@android:color/transparent"
         android:ems="10"
-        android:padding="4dp"
+        android:gravity="start"
         android:hint="Description..."
         android:inputType="text"
+        android:padding="4dp"
         android:textColorHint="#66000000"
-        app:layout_constraintEnd_toEndOf="@+id/editTextText"
-        app:layout_constraintStart_toStartOf="@+id/editTextText"
-        app:layout_constraintTop_toBottomOf="@+id/editTextText" />
+        app:layout_constraintBottom_toTopOf="@+id/item_1"
+        app:layout_constraintEnd_toEndOf="@+id/ed_task_title"
+        app:layout_constraintStart_toStartOf="@+id/ed_task_title"
+        app:layout_constraintTop_toBottomOf="@+id/ed_task_title" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/item_2"
+        app:layout_constraintEnd_toEndOf="@+id/item_2"
+        app:layout_constraintStart_toStartOf="@+id/item_2">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_date"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            app:cardBackgroundColor="@color/primary_5"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/cv_time"
+            app:layout_constraintStart_toStartOf="@+id/ed_task_description">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/bi_calendar2_date_fill" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/tv_date"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical"
+            android:text="08-June-2023"
+            android:textFontWeight="600"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_date"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cv_date"
+            app:layout_constraintTop_toTopOf="@+id/cv_date" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@id/item_3"
+        app:layout_constraintEnd_toEndOf="@+id/item_3"
+        app:layout_constraintStart_toStartOf="@+id/item_3">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_time"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="16dp"
+            android:clickable="true"
+            app:cardBackgroundColor="@color/primary_5"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/cv_before"
+            app:layout_constraintStart_toStartOf="@+id/ed_task_description">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/tabler_alarm_filled" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <TextView
+            android:id="@+id/tv_time"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical"
+            android:text="12:40 PM"
+            android:textFontWeight="600"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_time"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cv_time"
+            app:layout_constraintTop_toTopOf="@+id/cv_time" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/item_3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_before"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:clickable="true"
+            app:cardBackgroundColor="@color/primary_5"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/ed_task_description">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/mdi_alarm_light" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <EditText
+            android:id="@+id/tv_before"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:gravity="center_vertical"
+            android:text="15 min before"
+            android:textFontWeight="600"
+            android:background="@android:color/transparent"
+            app:layout_constraintBottom_toBottomOf="@+id/cv_before"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/cv_before"
+            app:layout_constraintTop_toTopOf="@+id/cv_before" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

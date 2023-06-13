@@ -1,28 +1,26 @@
-package com.kyawzinlinn.todoreminder.adapters
+package com.kyawzinlinn.taskreminder.adapters
 
 import android.animation.LayoutTransition
-import android.animation.ObjectAnimator
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.kyawzinlinn.todoreminder.animator.CustomAnimator
-import com.kyawzinlinn.todoreminder.data.models.ToDo
-import com.kyawzinlinn.todoreminder.data.models.ToDoWithDay
-import com.kyawzinlinn.todoreminder.databinding.ToDoWithDayItemBinding
+import com.kyawzinlinn.taskreminder.data.models.TaskWithDate
+import com.kyawzinlinn.taskreminder.database.Task
+import com.kyawzinlinn.taskreminder.databinding.ToDoWithDayItemBinding
 
-class ToDoWithDayItemAdapter(private val onCheckClicked: (ToDo, Boolean) -> Unit): ListAdapter<ToDoWithDay,ToDoWithDayItemAdapter.ViewHolder>(ToDoDayDiffCallBack) {
+class TaskWithDateItemAdapter(private val onCheckClicked: (Task, Boolean) -> Unit, private val onLonClicked: (Task) -> Unit): ListAdapter<TaskWithDate,TaskWithDateItemAdapter.ViewHolder>(ToDoDayDiffCallBack) {
 
     class ViewHolder(private val binding: ToDoWithDayItemBinding): RecyclerView.ViewHolder(binding.root){
 
-        fun bind(toDoWithDay: ToDoWithDay, onCheckClicked: (ToDo, Boolean) -> Unit) {
+        fun bind(toDoWithDay: TaskWithDate, onCheckClicked: (Task, Boolean) -> Unit, onLonClicked: (Task) -> Unit) {
 
             var isExpanded = toDoWithDay.isExpanded
 
-            binding.container.layoutTransition.enableTransitionType(LayoutTransition.APPEARING)
+            binding.container.layoutTransition.enableTransitionType(LayoutTransition.CHANGE_APPEARING)
+            binding.container.layoutTransition.enableTransitionType(LayoutTransition.CHANGE_DISAPPEARING)
 
             if (!isExpanded){
                 binding.ivDropdown.animate().rotation(180f)
@@ -34,9 +32,12 @@ class ToDoWithDayItemAdapter(private val onCheckClicked: (ToDo, Boolean) -> Unit
 
             binding.tvToDoDate.text = toDoWithDay.title
             with(binding.rvToDo){
+
                 setHasFixedSize(true)
-                val adapter = ToDoListItemAdapter(onCheckClicked = {toDo, b ->
+                val adapter = TaskItemAdapter(onCheckClicked = { toDo, b ->
                     onCheckClicked(toDo,b)
+                }, onLongClicked = {toDo ->
+                    onLonClicked(toDo)
                 })
                 itemAnimator = null
                 isNestedScrollingEnabled = false
@@ -66,15 +67,15 @@ class ToDoWithDayItemAdapter(private val onCheckClicked: (ToDo, Boolean) -> Unit
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position),onCheckClicked)
+        holder.bind(getItem(position),onCheckClicked, onLonClicked)
     }
 
-    companion object ToDoDayDiffCallBack: DiffUtil.ItemCallback<ToDoWithDay>(){
-        override fun areItemsTheSame(oldItem: ToDoWithDay, newItem: ToDoWithDay): Boolean {
+    companion object ToDoDayDiffCallBack: DiffUtil.ItemCallback<TaskWithDate>(){
+        override fun areItemsTheSame(oldItem: TaskWithDate, newItem: TaskWithDate): Boolean {
             return oldItem == newItem
         }
 
-        override fun areContentsTheSame(oldItem: ToDoWithDay, newItem: ToDoWithDay): Boolean {
+        override fun areContentsTheSame(oldItem: TaskWithDate, newItem: TaskWithDate): Boolean {
             return oldItem.title == newItem.title
         }
 
