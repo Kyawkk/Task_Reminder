@@ -4,7 +4,6 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kyawzinlinn.taskreminder.data.models.TaskWithDate
-import com.kyawzinlinn.taskreminder.util.isToday
 import com.kyawzinlinn.taskreminder.util.isTomorrow
 
 @Entity(tableName = "task")

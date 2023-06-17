@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this, ToDoViewModelFactory((application as App).database.taskDao())).get(ToDoViewModel::class.java)
+        viewModel = ViewModelProvider(this, ToDoViewModelFactory((application as App).repository)).get(ToDoViewModel::class.java)
         setContentView(binding.root)
 
         binding.mainContainer.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)

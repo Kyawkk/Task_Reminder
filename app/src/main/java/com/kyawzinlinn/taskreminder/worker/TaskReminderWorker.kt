@@ -10,13 +10,15 @@ class TaskReminderWorker(private val context: Context, params: WorkerParameters)
     companion object {
         const val taskTitleKey = "TASK_TITLE"
         const val taskDescriptionKey = "TASK_DESCRIPTION"
+        const val taskId = "TASK_ID"
     }
 
     override fun doWork(): Result {
         val taskTitle = inputData.getString(taskTitleKey)
         val taskDesc = inputData.getString(taskDescriptionKey)
+        val taskId = inputData.getString(taskId)
 
-        makeStatusNotification(taskTitle!!, taskDesc!!,context)
+        makeStatusNotification(taskId!!, taskTitle!!, taskDesc!!,context)
 
         return Result.success()
     }

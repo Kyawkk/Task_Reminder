@@ -2,7 +2,9 @@ package com.kyawzinlinn.taskreminder.util
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
@@ -11,12 +13,16 @@ import android.view.LayoutInflater
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.FragmentManager
+import androidx.room.util.wrapMappedColumns
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.kyawzinlinn.taskreminder.R
 import com.kyawzinlinn.taskreminder.databinding.DeleteTaskDialogBinding
+import com.kyawzinlinn.taskreminder.receiver.NotificationReceiver
+import com.kyawzinlinn.taskreminder.ui.MainActivity
+import com.kyawzinlinn.taskreminder.worker.TaskReminderWorker.Companion.taskId
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.util.Calendar
@@ -83,7 +89,7 @@ fun showDeleteTaskDialog(context: Context, onDelete: () -> Unit){
     dialog.show()
 }
 
-fun makeStatusNotification(title: String, message: String, context: Context) {
+fun makeStatusNotification(id: String, title: String, message: String, context: Context) {
 
     val CHANNEL_ID = "2432"
 
@@ -111,6 +117,25 @@ fun makeStatusNotification(title: String, message: String, context: Context) {
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setVibrate(LongArray(0))
 
+    val intent = Intent(context, NotificationReceiver::class.java).apply {
+        action = UPDATE_DATABASE_ACTION
+    }
+    intent.putExtra(UPDATE_TASK_ID, id)
+    val pendingIntent = PendingIntent.getBroadcast(
+        context,
+        0,
+        intent,
+        PendingIntent.FLAG_UPDATE_CURRENT
+    )
+
+    val action = NotificationCompat.Action.Builder(
+        R.drawable.ic_launcher_background,
+        "Done",
+        pendingIntent
+    ).build()
+
+    builder.addAction(action)
+
     // Show the notification
     NotificationManagerCompat.from(context).notify(1, builder.build())
 }
@@ -121,9 +146,10 @@ fun convertDateAndTimeToSeconds(dateString: String, timeString: String): Long{
 
     val calendar = Calendar.getInstance()
 
-    Log.d("TAG", "convertDateAndTimeToSeconds: $date  $time ${date.year} , ${date.month} ${date.date}, ${time.hours}, ${time.minutes}")
-    
-    calendar.set(date.year,date.month,date.day,time.hours, time.minutes)
+    val todayTime = Calendar.getInstance()
 
-    return calendar.timeInMillis / 1000
+    calendar.set(calendar.get(Calendar.YEAR),date.month,date.day,time.hours, time.minutes)
+    Log.d("TAG", "convertDateAndTimeToSeconds: ${calendar.timeInMillis} || ${todayTime.timeInMillis}")
+
+    return (calendar.timeInMillis / 1000L) - (todayTime.timeInMillis / 1000L)
 }

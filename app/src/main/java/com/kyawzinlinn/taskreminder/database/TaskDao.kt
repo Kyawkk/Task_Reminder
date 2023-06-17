@@ -22,6 +22,9 @@ interface TaskDao{
     @Delete
     suspend fun delete(task: Task)
 
+    @Query("update task set isFinished = 'true' where id = :id")
+    fun completeTask(id: String)
+
     @Query("select * from task where title = :query")
     fun searchTask(query: String): Flow<List<Task>>
 

@@ -9,25 +9,25 @@ import androidx.work.Data
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import com.kyawzinlinn.taskreminder.database.TaskDao
 import com.kyawzinlinn.taskreminder.database.Task
+import com.kyawzinlinn.taskreminder.repository.TaskRepository
 import com.kyawzinlinn.taskreminder.util.convertDateAndTimeToSeconds
 import com.kyawzinlinn.taskreminder.worker.TaskReminderWorker
 import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 import java.util.concurrent.TimeUnit
 
-class ToDoViewModel(private val toDoDao: TaskDao): ViewModel() {
+class ToDoViewModel(private val repository: TaskRepository): ViewModel() {
 
     private val workManager = WorkManager.getInstance()
 
-    val taskList = toDoDao.getTaskList().asLiveData()
+    val taskList = repository.allTasks.asLiveData()
 
-    suspend fun searchToDoList(query: String) = toDoDao.searchTask(query).asLiveData()
+    suspend fun searchToDoList(query: String) = viewModelScope.launch { repository.searchTask(query) }
 
     fun addTask(task: Task){
         viewModelScope.launch {
-            toDoDao.insert(task)
+            repository.insertTask(task)
             scheduleReminder(task)
         }
     }
@@ -36,13 +36,14 @@ class ToDoViewModel(private val toDoDao: TaskDao): ViewModel() {
         val data = Data.Builder()
         data.putString(TaskReminderWorker.taskTitleKey, task.title)
         data.putString(TaskReminderWorker.taskDescriptionKey, task.description)
+        data.putString(TaskReminderWorker.taskId, task.id.toString())
 
         val duration = convertDateAndTimeToSeconds(task.date,task.time)
 
         Log.d("TAG", "scheduleReminder: $duration")
 
         val reminderWorker = OneTimeWorkRequestBuilder<TaskReminderWorker>()
-            .setInitialDelay(duration,TimeUnit.SECONDS)
+            .setInitialDelay(3,TimeUnit.SECONDS)
             .setInputData(data.build())
             .build()
 
@@ -53,16 +54,16 @@ class ToDoViewModel(private val toDoDao: TaskDao): ViewModel() {
         )
     }
 
-    fun deleteTask(toDo: Task) = viewModelScope.launch { toDoDao.delete(toDo) }
+    fun deleteTask(task: Task) = viewModelScope.launch { repository.deleteTask(task) }
 
-    fun updateToDo(toDo: Task) = viewModelScope.launch { toDoDao.update(toDo) }
+    fun updateToDo(task: Task) = viewModelScope.launch { repository.updateTask(task) }
 }
 
-class ToDoViewModelFactory(private val taskDao: TaskDao): ViewModelProvider.Factory{
+class ToDoViewModelFactory(private val repository: TaskRepository): ViewModelProvider.Factory{
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ToDoViewModel::class.java)){
             @Suppress("UNCHECKED_CAST")
-            return ToDoViewModel(taskDao) as T
+            return ToDoViewModel(repository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel Class")
     }

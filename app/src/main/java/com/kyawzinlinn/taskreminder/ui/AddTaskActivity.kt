@@ -31,7 +31,7 @@ class AddTaskActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         binding = ActivityAddTaskBinding.inflate(layoutInflater)
-        viewModel = ViewModelProvider(this, ToDoViewModelFactory((application as App).database.taskDao())).get(ToDoViewModel::class.java)
+        viewModel = ViewModelProvider(this, ToDoViewModelFactory((application as App).repository)).get(ToDoViewModel::class.java)
 
         setContentView(binding.root)
 
