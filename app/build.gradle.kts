@@ -52,6 +52,9 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
+    // expanded layout
+    implementation ("com.github.skydoves:expandablelayout:1.0.7")
+
     val lifecycle_version = "2.6.1"
 
     // ViewModel

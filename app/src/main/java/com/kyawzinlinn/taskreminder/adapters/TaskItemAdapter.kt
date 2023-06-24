@@ -9,28 +9,22 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kyawzinlinn.taskreminder.database.Task
 import com.kyawzinlinn.taskreminder.databinding.ToDoListItemBinding
 
-class TaskItemAdapter(private val onCheckClicked: (Task, Boolean) -> Unit, private val onLongClicked: (Task) -> Unit): ListAdapter<Task,TaskItemAdapter.ViewHolder>(ToDoDiffCallBack) {
+class TaskItemAdapter(private val onCheckClicked: (Task, Boolean) -> Unit, private val onTaskClicked: (Task) -> Unit): ListAdapter<Task,TaskItemAdapter.ViewHolder>(ToDoDiffCallBack) {
 
     class ViewHolder(val binding: ToDoListItemBinding): RecyclerView.ViewHolder(binding.root){
 
-        fun bind(task: Task, onLongClicked: (Task) -> Unit){
+        fun bind(task: Task){
             binding.apply {
                 tvTodoTitle.text = task.title
                 tvTodoDescription.text = task.description
                 tvTodoTime.text = task.time
-                cbTodoCheck.isChecked = task.isFinished
+                cbTodoCheck.isChecked = task.isCompleted
 
-                if (task.isFinished){
+                if (task.isCompleted){
                     tvTodoTitle.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                     tvTodoDescription.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                     tvTodoTime.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG
                 }
-            }
-
-            itemView.setOnLongClickListener {
-                onLongClicked(task)
-
-                true
             }
         }
     }
@@ -43,11 +37,13 @@ class TaskItemAdapter(private val onCheckClicked: (Task, Boolean) -> Unit, priva
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position),onLongClicked)
+        holder.bind(getItem(position))
 
         holder.binding.cbTodoCheck.setOnCheckedChangeListener { compoundButton, b ->
             onCheckClicked(getItem(position),b)
         }
+
+        holder.itemView.setOnClickListener { onTaskClicked(getItem(position)) }
     }
 
     companion object ToDoDiffCallBack: DiffUtil.ItemCallback<Task>(){

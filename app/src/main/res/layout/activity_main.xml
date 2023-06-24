@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     android:id="@+id/main_container"
     android:orientation="vertical"
     tools:context=".ui.MainActivity">
@@ -75,6 +74,7 @@
         android:layout_marginBottom="24dp"
         android:clickable="true"
         android:layout_gravity="bottom|right"
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.FloatingActionButton"
         app:tint="@color/white"
         app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:backgroundTint="@color/primary_color"

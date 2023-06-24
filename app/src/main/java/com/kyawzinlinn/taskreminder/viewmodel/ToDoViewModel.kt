@@ -1,6 +1,7 @@
 package com.kyawzinlinn.taskreminder.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
@@ -17,46 +18,40 @@ import kotlinx.coroutines.launch
 import java.lang.IllegalArgumentException
 import java.util.concurrent.TimeUnit
 
+enum class OperationStatus{LOADING,DONE,ERROR}
+
 class ToDoViewModel(private val repository: TaskRepository): ViewModel() {
 
-    private val workManager = WorkManager.getInstance()
+    private val _status = MutableLiveData<OperationStatus>()
+    val status = _status
 
     val taskList = repository.allTasks.asLiveData()
 
     suspend fun searchToDoList(query: String) = viewModelScope.launch { repository.searchTask(query) }
 
     fun addTask(task: Task){
-        viewModelScope.launch {
-            repository.insertTask(task)
-            scheduleReminder(task)
+        try {
+            _status.value = OperationStatus.LOADING
+            viewModelScope.launch {
+                repository.insertTask(task)
+                _status.value = OperationStatus.DONE
+            }
+        }catch (e: Exception){
+            _status.value = OperationStatus.ERROR
         }
-    }
-
-    private fun scheduleReminder(task: Task){
-        val data = Data.Builder()
-        data.putString(TaskReminderWorker.taskTitleKey, task.title)
-        data.putString(TaskReminderWorker.taskDescriptionKey, task.description)
-        data.putString(TaskReminderWorker.taskId, task.id.toString())
-
-        val duration = convertDateAndTimeToSeconds(task.date,task.time)
-
-        Log.d("TAG", "scheduleReminder: $duration")
-
-        val reminderWorker = OneTimeWorkRequestBuilder<TaskReminderWorker>()
-            .setInitialDelay(3,TimeUnit.SECONDS)
-            .setInputData(data.build())
-            .build()
-
-        workManager.enqueueUniqueWork(
-            task.title,
-            ExistingWorkPolicy.REPLACE,
-            reminderWorker
-        )
     }
 
     fun deleteTask(task: Task) = viewModelScope.launch { repository.deleteTask(task) }
 
-    fun updateToDo(task: Task) = viewModelScope.launch { repository.updateTask(task) }
+    fun getTask(title: String, description: String) = repository.getTask(title, description)
+
+    fun updateToDo(task: Task) = try {
+        _status.value = OperationStatus.LOADING
+        viewModelScope.launch {
+            repository.updateTask(task)
+            _status.value = OperationStatus.DONE
+        }
+    }catch (e: Exception){_status.value = OperationStatus.ERROR}
 }
 
 class ToDoViewModelFactory(private val repository: TaskRepository): ViewModelProvider.Factory{

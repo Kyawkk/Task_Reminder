@@ -9,18 +9,28 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.View
 import android.view.ViewAnimationUtils
+import android.view.Window
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.core.app.ActivityOptionsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.transition.platform.MaterialFadeThrough
+import com.google.android.material.transition.platform.MaterialSharedAxis
 import com.kyawzinlinn.taskreminder.App
 import com.kyawzinlinn.taskreminder.R
 import com.kyawzinlinn.taskreminder.adapters.TaskWithDateItemAdapter
+import com.kyawzinlinn.taskreminder.data.models.TaskWithDate
 import com.kyawzinlinn.taskreminder.database.Task
 import com.kyawzinlinn.taskreminder.database.format
 import com.kyawzinlinn.taskreminder.databinding.ActivityMainBinding
+import com.kyawzinlinn.taskreminder.touch_helper.SwipeToDelete
+import com.kyawzinlinn.taskreminder.util.TASK_INTENT_EXTRA
+import com.kyawzinlinn.taskreminder.util.isNotificationPermissionGranted
+import com.kyawzinlinn.taskreminder.util.requestNotificationPermission
 import com.kyawzinlinn.taskreminder.util.showDeleteTaskDialog
 import com.kyawzinlinn.taskreminder.viewmodel.ToDoViewModel
 import com.kyawzinlinn.taskreminder.viewmodel.ToDoViewModelFactory
@@ -35,15 +45,25 @@ class MainActivity : AppCompatActivity() {
 
         AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
 
+        window.requestFeature(Window.FEATURE_CONTENT_TRANSITIONS)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         viewModel = ViewModelProvider(this, ToDoViewModelFactory((application as App).repository)).get(ToDoViewModel::class.java)
         setContentView(binding.root)
 
-        binding.mainContainer.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        if (!isNotificationPermissionGranted(this))
+            requestNotificationPermission(this)
 
+        setUpTransition()
         setUpToDoListRv()
         setUpClickListeners()
 
+    }
+
+    private fun setUpTransition(){
+        window.exitTransition = MaterialFadeThrough()
+        window.enterTransition = MaterialFadeThrough()
+        window.reenterTransition = MaterialFadeThrough()
     }
 
     private fun setUpToDoListRv(){
@@ -63,10 +83,13 @@ class MainActivity : AppCompatActivity() {
                             isChecked
                         )
                     )
-                }, onLonClicked = {toDo ->
-                    showDeleteTaskDialog(this@MainActivity){
-                        viewModel.deleteTask(toDo)
-                    }
+                }, onSwipeToDelete = {toDo ->
+                    viewModel.deleteTask(toDo)
+                    restoreDeleteTask(toDo)
+                }, onTaskClicked = {toDo ->
+                    val intent = Intent(this@MainActivity, AddTaskActivity::class.java)
+                    intent.putExtra(TASK_INTENT_EXTRA,toDo)
+                    startActivity(intent)
                 })
                 setAdapter(adapter)
                 adapter.submitList(it.format())
@@ -74,16 +97,25 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun restoreDeleteTask(task: Task){
+        val snackbar = Snackbar.make(
+            window.decorView,
+            "Deleted ${task.title}",
+            Snackbar.LENGTH_LONG
+        )
+
+        snackbar.setAction("restore"){
+            viewModel.addTask(task)
+        }
+        snackbar.show()
+    }
+
     private fun setUpClickListeners(){
         with(binding){
             floatingActionButton.setOnClickListener {
-                revealAnimation {
-                    Handler().postDelayed(Runnable {
-                        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@MainActivity)
-                        val intent = Intent(this@MainActivity, AddTaskActivity::class.java)
-                        startActivity(intent,options.toBundle())
-                    },0)
-                }
+                val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@MainActivity, floatingActionButton, "shared")
+                val intent = Intent(this@MainActivity, AddTaskActivity::class.java)
+                startActivity(intent,options.toBundle())
             }
         }
     }

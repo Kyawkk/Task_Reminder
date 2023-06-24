@@ -4,12 +4,13 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.kyawzinlinn.taskreminder.data.models.TaskWithDate
-import com.kyawzinlinn.taskreminder.util.isTomorrow
+import com.kyawzinlinn.taskreminder.util.convertDateAndTimeToSeconds
+import java.io.Serializable
 
 @Entity(tableName = "task")
 data class Task(
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val id: Long = 0,
 
     @ColumnInfo(name = "title")
     val title: String,
@@ -26,14 +27,15 @@ data class Task(
     @ColumnInfo(name = "delayTime")
     val delayTime: Int,
 
-    @ColumnInfo(name = "isFinished")
-    val isFinished: Boolean,
-)
+    @ColumnInfo(name = "isCompleted")
+    val isCompleted: Boolean,
+): Serializable
 
 fun List<Task>.format(): List<TaskWithDate>{
     return groupBy(
         {
-            if (it.isFinished) "Finished"
+            if (it.isCompleted) "Completed"
+            else if (!it.isCompleted && convertDateAndTimeToSeconds(it.date,it.time) <= 0) "Overdue"
             else it.date
         },
         {it})

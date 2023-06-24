@@ -15,7 +15,7 @@ import kotlinx.coroutines.launch
 class NotificationReceiver: BroadcastReceiver() {
     override fun onReceive(ctx: Context?, intent: Intent?) {
         val action = intent!!.action
-        val taskId = intent!!.getStringExtra(UPDATE_TASK_ID)
+        val taskId = intent.getStringExtra(UPDATE_TASK_ID)
 
         if (action == UPDATE_DATABASE_ACTION){
             val database = TaskDatabase.getDatabase(ctx!!)

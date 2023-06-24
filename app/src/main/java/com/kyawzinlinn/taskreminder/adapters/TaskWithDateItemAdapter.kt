@@ -1,21 +1,27 @@
 package com.kyawzinlinn.taskreminder.adapters
 
 import android.animation.LayoutTransition
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.kyawzinlinn.taskreminder.R
 import com.kyawzinlinn.taskreminder.data.models.TaskWithDate
 import com.kyawzinlinn.taskreminder.database.Task
 import com.kyawzinlinn.taskreminder.databinding.ToDoWithDayItemBinding
+import com.kyawzinlinn.taskreminder.touch_helper.SwipeToDelete
 
-class TaskWithDateItemAdapter(private val onCheckClicked: (Task, Boolean) -> Unit, private val onLonClicked: (Task) -> Unit): ListAdapter<TaskWithDate,TaskWithDateItemAdapter.ViewHolder>(ToDoDayDiffCallBack) {
+class TaskWithDateItemAdapter(private val onCheckClicked: (Task, Boolean) -> Unit, private val onSwipeToDelete: (Task) -> Unit, private val onTaskClicked: (Task) -> Unit): ListAdapter<TaskWithDate,TaskWithDateItemAdapter.ViewHolder>(ToDoDayDiffCallBack) {
 
     class ViewHolder(private val binding: ToDoWithDayItemBinding): RecyclerView.ViewHolder(binding.root){
 
-        fun bind(toDoWithDay: TaskWithDate, onCheckClicked: (Task, Boolean) -> Unit, onLonClicked: (Task) -> Unit) {
+        fun bind(toDoWithDay: TaskWithDate, onCheckClicked: (Task, Boolean) -> Unit, onSwipeToDelete: (Task) -> Unit, onTaskClicked: (Task) -> Unit) {
 
             var isExpanded = toDoWithDay.isExpanded
 
@@ -31,18 +37,21 @@ class TaskWithDateItemAdapter(private val onCheckClicked: (Task, Boolean) -> Uni
             }
 
             binding.tvToDoDate.text = toDoWithDay.title
+
+            // setup task list recyclerview
             with(binding.rvToDo){
 
                 setHasFixedSize(true)
                 val adapter = TaskItemAdapter(onCheckClicked = { toDo, b ->
                     onCheckClicked(toDo,b)
-                }, onLongClicked = {toDo ->
-                    onLonClicked(toDo)
+                },onTaskClicked = {toDo ->
+                    onTaskClicked(toDo)
                 })
                 itemAnimator = null
                 isNestedScrollingEnabled = false
                 setAdapter(adapter)
                 adapter.submitList(toDoWithDay.todoList)
+                swipeToDeleteTask(this, toDoWithDay.todoList, onSwipeToDelete)
             }
 
             binding.ivDropdown.setOnClickListener {
@@ -60,6 +69,21 @@ class TaskWithDateItemAdapter(private val onCheckClicked: (Task, Boolean) -> Uni
 
         }
 
+        private fun swipeToDeleteTask(
+            recyclerview: RecyclerView,
+            todoList: List<Task>,
+            onSwipeToDelete: (Task) -> Unit
+        ) {
+            val swipeToDeleteCallBack = object : SwipeToDelete(){
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val itemToDelete = todoList.get(viewHolder.adapterPosition)
+                    onSwipeToDelete(itemToDelete)
+                }
+            }
+            val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallBack)
+            itemTouchHelper.attachToRecyclerView(recyclerview)
+        }
+
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -67,7 +91,7 @@ class TaskWithDateItemAdapter(private val onCheckClicked: (Task, Boolean) -> Uni
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItem(position),onCheckClicked, onLonClicked)
+        holder.bind(getItem(position),onCheckClicked, onSwipeToDelete,onTaskClicked)
     }
 
     companion object ToDoDayDiffCallBack: DiffUtil.ItemCallback<TaskWithDate>(){
