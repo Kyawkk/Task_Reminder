@@ -72,14 +72,14 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:background="@android:color/transparent"
-        android:ems="10"
-        android:maxLines="1"
         android:ellipsize="end"
-        android:padding="4dp"
-        android:textFontWeight="400"
+        android:ems="10"
         android:hint="Write task here..."
         android:inputType="text"
+        android:maxLines="1"
+        android:padding="4dp"
         android:textColorHint="#66000000"
+        android:textFontWeight="400"
         android:textSize="34sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -151,22 +151,24 @@
         android:id="@+id/item_2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toTopOf="@id/item_3"
-        app:layout_constraintEnd_toEndOf="@+id/item_3"
-        app:layout_constraintStart_toStartOf="@+id/item_3">
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_time"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginBottom="16dp"
             android:clickable="true"
             app:cardBackgroundColor="@color/primary_5"
             app:cardCornerRadius="5dp"
             app:cardElevation="0dp"
-            app:layout_constraintBottom_toTopOf="@+id/cv_before"
-            app:layout_constraintStart_toStartOf="@+id/ed_task_description">
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:layout_width="24dp"
@@ -189,53 +191,6 @@
             app:layout_constraintStart_toEndOf="@+id/cv_time"
             app:layout_constraintTop_toTopOf="@+id/cv_time" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/item_3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_before"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:clickable="true"
-            app:cardBackgroundColor="@color/primary_5"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/ed_task_description">
-
-            <ImageView
-                android:id="@+id/imageView3"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                app:srcCompat="@drawable/mdi_alarm_light" />
-        </com.google.android.material.card.MaterialCardView>
-
-        <EditText
-            android:id="@+id/tv_before"
-            style="@style/TextAppearance.MaterialComponents.Subtitle1"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="16dp"
-            android:gravity="center_vertical"
-            android:text="15 min before"
-            android:textFontWeight="600"
-            android:background="@android:color/transparent"
-            app:layout_constraintBottom_toBottomOf="@+id/cv_before"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/cv_before"
-            app:layout_constraintTop_toTopOf="@+id/cv_before" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

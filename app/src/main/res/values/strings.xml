@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Task Reminder</string>
+    <string name="search_view_transition">search view transition</string>
 </resources>

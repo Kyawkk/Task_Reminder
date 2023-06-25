@@ -13,6 +13,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ToDo Reminder"
+rootProject.name = "Task Reminder"
 include(":app")
  

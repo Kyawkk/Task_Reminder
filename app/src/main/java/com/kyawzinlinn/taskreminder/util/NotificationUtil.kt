@@ -10,7 +10,6 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.kyawzinlinn.taskreminder.R
@@ -19,11 +18,10 @@ import com.kyawzinlinn.taskreminder.receiver.NotificationReceiver
 
 object NotificationUtil {
     private const val CHANNEL_ID = "com.kyawzinlinn.taskreminder.channel_id"
-    private const val CHANNEL_NAME = "Channel Name"
     const val NOTIFICATION_ID = 1
 
     fun makeStatusNotification(id: String, title: String, message: String, context: Context) {
-        val soundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
+        val soundUri: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
 
         // Make a channel if necessary
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -37,7 +35,7 @@ object NotificationUtil {
 
             val importance = NotificationManager.IMPORTANCE_HIGH
             val channel = NotificationChannel(CHANNEL_ID, title, importance)
-            channel.setSound(soundUri,audioAttributes)
+            channel.setSound(soundUri, audioAttributes)
             channel.description = message
             channel.lockscreenVisibility = NotificationCompat.VISIBILITY_PUBLIC
 
@@ -80,15 +78,15 @@ object NotificationUtil {
         builder.addAction(action)
 
         // Show the notification
-        NotificationManagerCompat.from(context).notify(1, builder.build())
+        NotificationManagerCompat.from(context).notify(NOTIFICATION_ID, builder.build())
     }
 }
 
-fun isNotificationPermissionGranted(context: Context): Boolean{
+fun isNotificationPermissionGranted(context: Context): Boolean {
     return NotificationManagerCompat.from(context).areNotificationsEnabled()
 }
 
-fun requestNotificationPermission(context: Context){
+fun requestNotificationPermission(context: Context) {
     val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
         .putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
     context.startActivity(intent)

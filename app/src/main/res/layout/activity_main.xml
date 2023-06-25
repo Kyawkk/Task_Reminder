@@ -2,40 +2,42 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main_container"
     android:orientation="vertical"
     tools:context=".ui.MainActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraint"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
         android:layout_marginStart="16dp"
-        android:id="@+id/constraint"
         android:layout_marginEnd="16dp"
         android:orientation="horizontal">
+
         <TextView
             android:id="@+id/textView"
             style="@style/TextAppearance.AppCompat.Title"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="To Do List"
-            android:textFontWeight="600"
             android:gravity="center_vertical"
-            app:layout_constraintBottom_toBottomOf="@id/card"
+            android:text="Task List"
+            android:textFontWeight="600"
+            app:layout_constraintBottom_toBottomOf="@id/iv_search_view_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.google.android.material.card.MaterialCardView
-            android:id="@+id/card"
+            android:id="@+id/iv_search_view_icon"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_gravity="center_vertical"
             android:clickable="true"
+            android:transitionName="@string/search_view_transition"
             app:cardBackgroundColor="@color/primary_5"
             app:cardCornerRadius="5dp"
             app:cardElevation="0dp"
-            android:layout_gravity="center_vertical"
             app:layout_constraintBottom_toBottomOf="@+id/textView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -50,46 +52,44 @@
         </com.google.android.material.card.MaterialCardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <include
+        android:id="@+id/no_task_layout"
+        layout="@layout/no_task_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_to_do_with_day"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
         android:layout_marginStart="16dp"
         android:layout_marginTop="?actionBarSize"
+        android:layout_marginEnd="16dp"
+        android:elevation="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_anchor="@id/constraint"
         app:layout_anchorGravity="top"
-        android:layout_gravity="bottom"
-        android:elevation="0dp"
-        android:layout_marginEnd="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:itemCount="3"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:itemCount="3"
         tools:listitem="@layout/to_do_with_day_item" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:clickable="true"
-        android:layout_gravity="bottom|right"
-        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.FloatingActionButton"
-        app:tint="@color/white"
-        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:backgroundTint="@color/primary_color"
+        app:layout_behavior="com.google.android.material.behavior.HideBottomViewOnScrollBehavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/round_add_24" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:cardElevation="0dp"
-        android:layout_gravity="bottom|end"
-        android:background="@color/primary_color"
-        app:cardCornerRadius="32dp"
-        android:visibility="invisible"
-        android:id="@+id/reveal"/>
+        app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.Material3.FloatingActionButton"
+        app:srcCompat="@drawable/round_add_24"
+        app:tint="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

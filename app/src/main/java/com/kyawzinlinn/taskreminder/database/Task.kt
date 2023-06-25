@@ -24,22 +24,23 @@ data class Task(
     @ColumnInfo(name = "time")
     val time: String,
 
-    @ColumnInfo(name = "delayTime")
-    val delayTime: Int,
-
     @ColumnInfo(name = "isCompleted")
     val isCompleted: Boolean,
-): Serializable
+) : Serializable
 
-fun List<Task>.format(): List<TaskWithDate>{
+fun List<Task>.format(): List<TaskWithDate> {
     return groupBy(
         {
             if (it.isCompleted) "Completed"
-            else if (!it.isCompleted && convertDateAndTimeToSeconds(it.date,it.time) <= 0) "Overdue"
+            else if (!it.isCompleted && convertDateAndTimeToSeconds(
+                    it.date,
+                    it.time
+                ) <= 0
+            ) "Overdue"
             else it.date
         },
-        {it})
+        { it })
         .map { mapData ->
-        TaskWithDate(mapData.key,mapData.value)
-    }.sortedBy { it.title }
+            TaskWithDate(mapData.key, mapData.value)
+        }.sortedBy { it.title }
 }

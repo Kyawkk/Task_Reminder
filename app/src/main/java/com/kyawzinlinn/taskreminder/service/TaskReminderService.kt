@@ -7,15 +7,19 @@ import com.kyawzinlinn.taskreminder.database.Task
 import com.kyawzinlinn.taskreminder.util.TASK_INTENT_EXTRA
 import com.kyawzinlinn.taskreminder.util.WorkerUtils.scheduleReminder
 
-class TaskReminderService: Service() {
+/**
+ * TaskReminderService has to be used because if the app is destroyed, work manager will not work
+ * in some ROMs like MIUI.
+ * **/
+class TaskReminderService : Service() {
 
     override fun onBind(p0: Intent?): IBinder? {
         return null
     }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val task = intent?.extras?.getSerializable(TASK_INTENT_EXTRA) as Task
         scheduleReminder(task)
-
         return START_STICKY
     }
 

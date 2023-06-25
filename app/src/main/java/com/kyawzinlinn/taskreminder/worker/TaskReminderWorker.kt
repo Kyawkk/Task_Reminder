@@ -5,7 +5,8 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.kyawzinlinn.taskreminder.util.NotificationUtil.makeStatusNotification
 
-class TaskReminderWorker(private val context: Context, params: WorkerParameters): Worker(context,params) {
+class TaskReminderWorker(private val context: Context, params: WorkerParameters) :
+    Worker(context, params) {
 
     companion object {
         const val taskTitleKey = "TASK_TITLE"
@@ -18,7 +19,7 @@ class TaskReminderWorker(private val context: Context, params: WorkerParameters)
         val taskDesc = inputData.getString(taskDescriptionKey)
         val taskId = inputData.getString(taskIdKey)
 
-        makeStatusNotification(taskId!!, taskTitle!!, taskDesc!!,context)
+        makeStatusNotification(taskId!!, taskTitle!!, taskDesc!!, context)
 
         return Result.success()
     }

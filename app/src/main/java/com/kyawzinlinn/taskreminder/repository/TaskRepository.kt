@@ -8,21 +8,18 @@ import kotlinx.coroutines.flow.Flow
 class TaskRepository(private val taskDao: TaskDao) {
     val allTasks: Flow<List<Task>> = taskDao.getTaskList()
 
-    suspend fun insertTask(task: Task){
+    suspend fun insertTask(task: Task) {
         taskDao.insert(task)
     }
 
-    suspend fun updateTask(task: Task){
+    suspend fun updateTask(task: Task) {
         taskDao.update(task)
     }
 
-    suspend fun deleteTask(task: Task){
+    suspend fun deleteTask(task: Task) {
         taskDao.delete(task)
     }
 
-    fun getTask(title: String, description: String) = taskDao.getTask(title,description).asLiveData()
-
-    suspend fun searchTask(query: String){
-        taskDao.searchTask(query)
-    }
+    fun getTask(title: String, description: String) =
+        taskDao.getTask(title, description).asLiveData()
 }

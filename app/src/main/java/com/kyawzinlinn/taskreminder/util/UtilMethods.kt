@@ -1,47 +1,18 @@
 package com.kyawzinlinn.taskreminder.util
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.content.Context
-import android.content.Intent
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
-import android.media.AudioAttributes
-import android.media.RingtoneManager
-import android.net.Uri
-import android.os.Build
-import android.util.Log
-import android.view.LayoutInflater
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
+import android.content.DialogInterface
 import androidx.fragment.app.FragmentManager
-import androidx.room.util.wrapMappedColumns
-import androidx.work.Data
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
-import com.kyawzinlinn.taskreminder.R
-import com.kyawzinlinn.taskreminder.database.Task
-import com.kyawzinlinn.taskreminder.databinding.DeleteTaskDialogBinding
-import com.kyawzinlinn.taskreminder.receiver.NotificationReceiver
-import com.kyawzinlinn.taskreminder.ui.MainActivity
-import com.kyawzinlinn.taskreminder.worker.TaskReminderWorker
 import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
-fun showDatePicker(fragmentManager: FragmentManager, onDatePicked: (String) ->  Unit){
+fun showDatePicker(fragmentManager: FragmentManager, onDatePicked: (String) -> Unit) {
     val datePicker = MaterialDatePicker.Builder.datePicker()
         .setTitleText("Select Date")
         .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
@@ -52,10 +23,10 @@ fun showDatePicker(fragmentManager: FragmentManager, onDatePicked: (String) ->  
         onDatePicked(formatter.format(it))
     }
 
-    datePicker.show(fragmentManager,"datePicker")
+    datePicker.show(fragmentManager, "datePicker")
 }
 
-fun showTimePicker(fragmentManager: FragmentManager, onTimePicked: (String) -> Unit){
+fun showTimePicker(fragmentManager: FragmentManager, onTimePicked: (String) -> Unit) {
     val picker = MaterialTimePicker.Builder()
         .setTimeFormat(TimeFormat.CLOCK_12H)
         .setTitleText("Select Time")
@@ -63,13 +34,12 @@ fun showTimePicker(fragmentManager: FragmentManager, onTimePicked: (String) -> U
 
 
     picker.addOnPositiveButtonClickListener {
-        onTimePicked(formatHour(picker.hour,picker.minute))
+        onTimePicked(formatHour(picker.hour, picker.minute))
     }
-
-    picker.show(fragmentManager,"timePicker")
+    picker.show(fragmentManager, "timePicker")
 }
 
-fun formatHour(hour: Int, minute: Int): String{
+fun formatHour(hour: Int, minute: Int): String {
 
     val formatter = SimpleDateFormat("H:mm:ss")
     val dateObj = formatter.parse("$hour:$minute:00")
@@ -82,27 +52,12 @@ fun isTomorrow(date: String): Boolean {
     return date.equals(tomorrow)
 }
 
-private fun isToday(date: String): Boolean{
+fun isToday(date: String): Boolean {
     val today = LocalDate.now().toString()
     return today.equals(date)
 }
 
-fun showDeleteTaskDialog(context: Context, onDelete: () -> Unit){
-    val builder = MaterialAlertDialogBuilder(context)
-    val dialogBinding = DeleteTaskDialogBinding.inflate(LayoutInflater.from(context))
-
-    builder.background = ColorDrawable(Color.TRANSPARENT)
-    val dialog = builder.setView(dialogBinding.root).create()
-    dialogBinding.btnDelete.setOnClickListener {
-        onDelete()
-        dialog.dismiss()
-    }
-
-    dialogBinding.btnCancel.setOnClickListener { dialog.dismiss() }
-    dialog.show()
-}
-
-fun convertDateAndTimeToSeconds(dateString: String, timeString: String): Long{
+fun convertDateAndTimeToSeconds(dateString: String, timeString: String): Long {
     val format = SimpleDateFormat("yyyy-MM-dd hh:mm:ss a", Locale.getDefault())
     val date = format.parse("$dateString $timeString")
 
@@ -114,4 +69,17 @@ fun convertDateAndTimeToSeconds(dateString: String, timeString: String): Long{
     val todayTime = Calendar.getInstance()
 
     return (milliseconds / 1000L) - (todayTime.timeInMillis / 1000L)
+}
+
+fun showCheckNotificationPermissionDialog(context: Context) {
+    val builder = MaterialAlertDialogBuilder(context)
+    builder.setTitle("Important")
+    builder.setMessage("You have to enable notification permission in order to receive notification.")
+    builder.setPositiveButton("Ok", object : DialogInterface.OnClickListener {
+        override fun onClick(p0: DialogInterface?, p1: Int) {
+            requestNotificationPermission(context)
+        }
+    })
+    builder.setCancelable(false)
+    builder.create().show()
 }

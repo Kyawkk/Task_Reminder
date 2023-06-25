@@ -9,7 +9,7 @@ import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface TaskDao{
+interface TaskDao {
     @Query("select * from task ORDER BY title")
     fun getTaskList(): Flow<List<Task>>
 
